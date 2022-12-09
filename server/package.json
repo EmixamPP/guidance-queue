@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "ws": "^8.11.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.7",
+    "utf-8-validate": "^5.0.10"
+  },
+  "name": "guidance",
+  "version": "1.0.0",
+  "main": "guidance.js",
+  "scripts": {
+    "start": "node guidance.js"
+  },
+  "author": "Maxime Dirksen",
+  "license": "MIT",
+  "description": "File d'attente pour la guidance informatique de l'ULB",
+  "type": "module"
+}

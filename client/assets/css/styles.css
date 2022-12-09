@@ -1,0 +1,23 @@
+.justify-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.children-margin-bottom > * {
+  margin-bottom: 8px;
+}
+
+.justify-center {
+  display: flex;
+  justify-content: center;
+}
+
+.align-center {
+  display: flex;
+  align-items: initial;
+}
+
+.ticket-card {
+  width: 10em;
+}
+
