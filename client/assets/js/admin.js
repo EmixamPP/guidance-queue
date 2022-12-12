@@ -4,6 +4,16 @@ const queue = document.getElementById('queue');
 if ('Notification' in window && Notification.permission === 'default') 
     Notification.requestPermission();
 
+function showLoggin(){
+    document.getElementById('panel').classList.add("d-none");
+    document.getElementById('login').classList.remove("d-none");
+}
+
+function showPanel(){
+    document.getElementById('login').classList.add("d-none");
+    document.getElementById('panel').classList.remove("d-none");
+}
+
 function notifyNoMoreEmptyQueue(){  
     if (Notification.permission === 'granted') {
         const notif = new Notification("Le file n'est plus vide !", {
@@ -57,16 +67,14 @@ function admin() {
     socket  = new WebSocket('wss://guidance.emixam.be/server?username=' + username + "&password=" + password);
     
     socket.onopen = (e) => {
-        document.getElementById('login').classList.add("d-none");
-        document.getElementById('panel').classList.remove("d-none");
+        showPanel();
         ping(); // start ping-pong
     }
    
     socket.onclose = (e) => {
         socket = null;
         queue.innerHTML = "";
-        document.getElementById('panel').classList.add("d-none");
-        document.getElementById('login').classList.remove("d-none");
+        showLogin();
     }
     
     socket.onmessage = (e) => {
@@ -89,9 +97,9 @@ function admin() {
     }
     
     socket.onerror = (e) => {
-        socket.close();
         socket = null;
         queue.innerHTML = "";
+        showLogin();
         alert("Erreur de connexion avec le serveur");
     }
 }

@@ -37,12 +37,11 @@ function openTicket() {
         }
         
         socket.onmessage = (e) => {
-        msg = JSON.parse(e.data);
-        
-        if (msg["action"] == "pong") {
-            ping();
+            msg = JSON.parse(e.data);
+
+            if (msg["action"] == "pong")
+                ping();
         }
-    }
 
         socket.onclose = (e) => {
             if (e.code === 3000) // choosed 
@@ -53,8 +52,8 @@ function openTicket() {
         }
         
         socket.onerror = (e) => {
-            socket.close();
             socket = null;
+            showAdd();
             alert("Une erreur est survenue");
         }
     }
