@@ -20,22 +20,22 @@ function showAdd() {
 }
 
 function ping() {
-    if (socket != null) 
-        setTimeout(() => socket.send(JSON.stringify({"action": "ping"})), 60000); // send ping in 60 sec
+    if (socket != null)
+        setTimeout(() => socket.send(JSON.stringify({ "action": "ping" })), 60000); // send ping in 60 sec
 }
 
 function openTicket() {
     const pc = document.getElementById('pc').value;
     if (pc != "") {
         if (socket != null) socket.close();
-    
+
         socket = new WebSocket('wss://guidance.emixam.be/server?pc=' + pc);
 
         socket.onopen = (e) => {
             showWait();
             ping(); // start ping-pong
         }
-        
+
         socket.onmessage = (e) => {
             msg = JSON.parse(e.data);
 
@@ -44,13 +44,13 @@ function openTicket() {
         }
 
         socket.onclose = (e) => {
+            socket = null;
             if (e.code === 3000) // choosed 
                 showEnd();
             else // close for other reason
                 showAdd();
-            socket = null;
         }
-        
+
         socket.onerror = (e) => {
             socket = null;
             showAdd();

@@ -7,3 +7,5 @@ L'adresse du serveur (actuellement `wss://guidance.emixam.be/server`) doit être
 Un fichier `nginx.conf` est présent afin de le configurer sur un serveur nginx. Note: à ne pas confondre avec le serveur utilisé pour l'application, i.e. Node.js. 
 
 Attention, le navigateur ne doit pas ce mettre en veille. Sinon la connexion avec le serveur sera interrompue. Il faudra alors se reconnecter dans le cas de l'administrateur, ou se remettre dans la file d'attente dans le cas de l'étudiant.
+
+Les fichiers non pas été minifier sur git afin de rester lisible. Pensez à le faire avant de mettre en production le site.

@@ -11,20 +11,18 @@ const admins = []
 
 function sendNewToAdmins(pc) {
     admins.forEach((admin) => {
-        admin.send(JSON.stringify({"action": "new", "pc": pc}));
-    })
+        admin.send(JSON.stringify({ "action": "new", "pc": pc }));
+    });
 }
 
 function sendAllStudents(ws) {
-    Object.keys(students).forEach((pc) => {
-        ws.send(JSON.stringify({"action": "new", "pc": pc}));
-    })
+    ws.send(JSON.stringify({ "action": "news", "pcs": Object.keys(students) }));
 }
 
 function sendRemoveToAdmins(pc) {
     admins.forEach((admin) => {
-        admin.send(JSON.stringify({"action": "remove", "pc": pc}));
-    })
+        admin.send(JSON.stringify({ "action": "remove", "pc": pc }));
+    });
 }
 
 function studentConnection(ws, query) {
@@ -42,9 +40,9 @@ function studentConnection(ws, query) {
         const msg = JSON.parse(data);
 
         if (msg["action"] == "ping") { // respond pong
-            ws.send(JSON.stringify({action: "pong"}));
+            ws.send(JSON.stringify({ action: "pong" }));
         }
-    })
+    });
 
     sendNewToAdmins(pc);
 }
@@ -63,7 +61,7 @@ function adminConnection(ws) {
             students[msg["pc"]].close(3000, "choosed");
 
         } else if (msg["action"] == "ping") { // respond pong
-            ws.send(JSON.stringify({action: "pong"}));
+            ws.send(JSON.stringify({ action: "pong" }));
         }
     });
 
@@ -79,7 +77,7 @@ wss.on('connection', (ws, request) => {
 
     if (query["pc"] !== undefined) {
         studentConnection(ws, query);
-    } else if (query["username"] === ADMIN_USERNAME && query["password"] === ADMIN_PASSWORD){
+    } else if (query["username"] === ADMIN_USERNAME && query["password"] === ADMIN_PASSWORD) {
         adminConnection(ws);
     } else {
         // reject connection
