@@ -1,4 +1,4 @@
-let socket = null;
+var socket = null;
 let current = document.getElementById('add');
 
 function showWait() {
@@ -19,42 +19,38 @@ function showAdd() {
     current.classList.remove("d-none");
 }
 
-function ping() {
-    if (socket != null)
-        setTimeout(() => socket.send(JSON.stringify({ "action": "ping" })), 60000); // send ping in 60 sec
-}
-
 function openTicket() {
     const pc = document.getElementById('pc').value;
     if (pc != "") {
         if (socket != null) socket.close();
-
         socket = new WebSocket('wss://guidance.emixam.be/server?pc=' + pc);
 
         socket.onopen = (e) => {
+            getWakeLock();
             showWait();
             ping(); // start ping-pong
         }
 
-        socket.onmessage = (e) => {
-            msg = JSON.parse(e.data);
+        socket.onmessage = (event) => {
+            msg = JSON.parse(event.data);
 
             if (msg["action"] == "pong")
                 ping();
         }
 
-        socket.onclose = (e) => {
+        socket.onclose = (event) => {
+            releaseWakeLock();
             socket = null;
-            if (e.code === 3000) // choosed 
+            if (event.code === 3000) // choosed 
                 showEnd();
             else // close for other reason
                 showAdd();
         }
 
-        socket.onerror = (e) => {
-            socket = null;
-            showAdd();
+        socket.onerror = (err) => {
+            console.log(err);
             alert("Une erreur est survenue");
+            socket.close();
         }
     }
 }

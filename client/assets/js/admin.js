@@ -1,10 +1,10 @@
-let socket = null;
+var socket = null;
 const queue = document.getElementById('queue');
 
 if ('Notification' in window && Notification.permission === 'default')
     Notification.requestPermission();
 
-function showLoggin() {
+function showLogin() {
     document.getElementById('panel').classList.add("d-none");
     document.getElementById('login').classList.remove("d-none");
 }
@@ -54,11 +54,6 @@ function createTicketCard(pc) {
     div.appendChild(button);
 }
 
-function ping() {
-    if (socket != null)
-        setTimeout(() => socket.send(JSON.stringify({ "action": "ping" })), 60000); // send ping in 60 sec
-}
-
 function admin() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -67,18 +62,20 @@ function admin() {
     socket = new WebSocket('wss://guidance.emixam.be/server?username=' + username + "&password=" + password);
 
     socket.onopen = (e) => {
+        getWakeLock();
         showPanel();
         ping(); // start ping-pong
     }
 
     socket.onclose = (e) => {
+        releaseWakeLock();
         socket = null;
         queue.innerHTML = "";
         showLogin();
     }
 
-    socket.onmessage = (e) => {
-        msg = JSON.parse(e.data);
+    socket.onmessage = (event) => {
+        msg = JSON.parse(event.data);
         const queue = document.getElementById('queue');
 
         if (msg["action"] == "remove") {
@@ -100,11 +97,10 @@ function admin() {
         }
     }
 
-    socket.onerror = (e) => {
-        socket = null;
-        queue.innerHTML = "";
-        showLogin();
+    socket.onerror = (err) => {
+        console.error(err);
         alert("Erreur de connexion avec le serveur");
+        socket.close();
     }
 }
 
