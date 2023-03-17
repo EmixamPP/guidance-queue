@@ -7,7 +7,8 @@ const ADMIN_PASSWORD = "admin";
 const wss = new WebSocketServer({ port: 8080 });
 
 const students = {};
-const admins = []
+let students_pc_queue = []; // to keep in fifo the ticket when they are all sent
+let admins = [];
 
 function sendNewToAdmins(pc) {
     admins.forEach((admin) => {
@@ -16,7 +17,7 @@ function sendNewToAdmins(pc) {
 }
 
 function sendAllStudents(ws) {
-    ws.send(JSON.stringify({ "action": "news", "pcs": Object.keys(students) }));
+    ws.send(JSON.stringify({ "action": "news", "pcs": students_pc_queue }));
 }
 
 function sendRemoveToAdmins(pc) {
@@ -27,12 +28,14 @@ function sendRemoveToAdmins(pc) {
 
 function studentConnection(ws, query) {
     let pc = query["pc"];
-    if (pc in students)
+    if (students_pc_queue.includes(pc))
         pc = pc + "_bis";
+    students_pc_queue.push(pc);
     students[pc] = ws;
 
     ws.on('close', () => {
         sendRemoveToAdmins(pc);
+        students_pc_queue = students_pc_queue.filter(e => e !== pc);
         delete students[pc];
     });
 
@@ -53,8 +56,8 @@ function adminConnection(ws) {
     ws.on('message', (data) => {
         const msg = JSON.parse(data);
         if (msg["action"] == "flush") { // close all students conn
-            Object.values(students).forEach((student) => {
-                student.close();
+            students_pc_queue.forEach((pc) => {
+                students[pc].close();
             });
 
         } else if (msg["action"] == "take") { // close specific student conn
@@ -66,7 +69,7 @@ function adminConnection(ws) {
     });
 
     ws.on('close', () => {
-        admins.splice(admins.indexOf(ws), 1);
+        admins = admins.filter(e => e !== ws);
     });
 
     sendAllStudents(ws);
