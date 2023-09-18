@@ -1,8 +1,10 @@
 import { WebSocketServer } from 'ws';
 import { parse } from 'querystring';
 
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "admin";
+
+const ADMIN_USERNAME = process.env.DB_USERNAME;
+const ADMIN_PASSWORD = process.env.DB_PASSWORD;
+
 
 const wss = new WebSocketServer({ port: 8080 });
 

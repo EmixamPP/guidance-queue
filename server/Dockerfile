@@ -1,5 +1,9 @@
 FROM node:16
 
+# Environment variable
+ENV ADMIN_USERNAME=admin
+ENV ADMIN_PASSWORD=changeme
+
 # Create app directory
 WORKDIR /usr/src/app
 
