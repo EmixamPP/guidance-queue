@@ -59,7 +59,7 @@ function admin() {
     const password = document.getElementById('password').value;
 
     if (socket != null) socket.close();
-    socket = new WebSocket('wss://guidance.emixam.be/server?username=' + username + "&password=" + password);
+    socket = new WebSocket('wss://guidance.domain.be/server?username=' + username + "&password=" + password);
 
     socket.onopen = (e) => {
         getWakeLock();

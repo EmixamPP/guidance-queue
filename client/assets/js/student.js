@@ -23,7 +23,7 @@ function openTicket() {
     const pc = document.getElementById('pc').value;
     if (pc != "") {
         if (socket != null) socket.close();
-        socket = new WebSocket('wss://guidance.emixam.be/server?pc=' + pc);
+        socket = new WebSocket('wss://guidance.domain.be/server?pc=' + pc);
 
         socket.onopen = (e) => {
             getWakeLock();
